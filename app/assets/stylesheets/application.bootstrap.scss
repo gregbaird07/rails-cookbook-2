@@ -407,6 +407,37 @@ a:hover {
   }
 }
 
+// Recipe URL Parser styling
+.recipe-url-parser {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-left: 4px solid var(--bs-primary);
+  
+  .card-title {
+    color: var(--bs-primary);
+    font-weight: 600;
+  }
+  
+  .btn {
+    white-space: nowrap;
+  }
+  
+  .alert {
+    margin-bottom: 0;
+    
+    &.alert-success {
+      background-color: var(--bs-success-bg-subtle, rgba(25, 135, 84, 0.1));
+      border-color: var(--bs-success-border-subtle, #198754);
+      color: var(--bs-success-text-emphasis, #0f5132);
+    }
+    
+    &.alert-danger {
+      background-color: var(--bs-danger-bg-subtle, rgba(220, 53, 69, 0.1));
+      border-color: var(--bs-danger-border-subtle, #dc3545);
+      color: var(--bs-danger-text-emphasis, #58151c);
+    }
+  }
+}
+
 // Respect user's system preference when no explicit theme is set
 // This media query applies dark theme when user prefers dark mode
 // and no data-bs-theme attribute is explicitly set on html element

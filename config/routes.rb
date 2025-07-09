@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   get "home/index"
   
   # Recipe routes
-  resources :recipes
+  resources :recipes do
+    collection do
+      post :parse_url
+    end
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
