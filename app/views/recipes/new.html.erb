@@ -16,47 +16,81 @@
       </div>
       
       <div class="card-body">
+        <!-- URL Parser Section -->
+        <div class="card mb-4 recipe-url-parser">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="bi bi-link-45deg"></i> Import from Recipe URL
+            </h5>
+            <p class="card-text text-muted">
+              Have a recipe URL? Paste it below and we'll try to automatically fill in the form fields.
+            </p>
+            
+            <div class="input-group mb-3">
+              <input type="url" 
+                     id="recipe-url-input" 
+                     class="form-control" 
+                     placeholder="https://example.com/recipe-url">
+              <button type="button" 
+                      id="parse-url-btn" 
+                      class="btn btn-outline-primary">
+                <i class="bi bi-magic"></i> Parse Recipe
+              </button>
+            </div>
+            
+            <div id="parse-error" class="alert alert-danger" style="display: none;"></div>
+            <div id="parse-success" class="alert alert-success" style="display: none;"></div>
+            
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i>
+              Supports most popular recipe websites that use structured data (AllRecipes, Food Network, Taste of Home, etc.).
+              <br>
+              <strong>Example:</strong> https://www.allrecipes.com/recipe/213742/cheesy-chicken-broccoli-casserole/
+            </small>
+          </div>
+        </div>
+
         <%= form_with model: @recipe, local: true do |form| %>
           <%= render 'shared/error_messages', object: @recipe %>
 
           <div class="mb-3">
             <%= form.label :title, class: "form-label" %>
-            <%= form.text_field :title, class: "form-control form-control-lg", 
+            <%= form.text_field :title, id: "recipe_title", class: "form-control form-control-lg", 
                                 placeholder: "e.g., Grandma's Chocolate Chip Cookies" %>
           </div>
 
           <div class="mb-3">
             <%= form.label :description, class: "form-label" %>
-            <%= form.text_area :description, rows: 3, class: "form-control", 
+            <%= form.text_area :description, id: "recipe_description", rows: 3, class: "form-control", 
                                placeholder: "Brief description of your recipe and what makes it special..." %>
           </div>
 
           <div class="row">
             <div class="col-md-4 mb-3">
               <%= form.label :prep_time, "Prep Time (minutes)", class: "form-label" %>
-              <%= form.number_field :prep_time, class: "form-control", min: 0, placeholder: "15" %>
+              <%= form.number_field :prep_time, id: "recipe_prep_time", class: "form-control", min: 0, placeholder: "15" %>
             </div>
             <div class="col-md-4 mb-3">
               <%= form.label :cook_time, "Cook Time (minutes)", class: "form-label" %>
-              <%= form.number_field :cook_time, class: "form-control", min: 0, placeholder: "30" %>
+              <%= form.number_field :cook_time, id: "recipe_cook_time", class: "form-control", min: 0, placeholder: "30" %>
             </div>
             <div class="col-md-4 mb-3">
               <%= form.label :servings, class: "form-label" %>
-              <%= form.number_field :servings, class: "form-control", min: 1, placeholder: "4" %>
+              <%= form.number_field :servings, id: "recipe_servings", class: "form-control", min: 1, placeholder: "4" %>
             </div>
           </div>
 
           <div class="mb-3">
             <%= form.label :ingredients, class: "form-label" %>
             <small class="text-muted">(Use bullet points • for each ingredient)</small>
-            <%= form.text_area :ingredients, rows: 8, class: "form-control", 
+            <%= form.text_area :ingredients, id: "recipe_ingredients", rows: 8, class: "form-control", 
                                placeholder: "• 2 cups all-purpose flour\n• 1 cup sugar\n• 1/2 cup butter\n• 2 eggs\n• 1 tsp vanilla extract" %>
           </div>
 
           <div class="mb-4">
             <%= form.label :instructions, class: "form-label" %>
             <small class="text-muted">(Number each step)</small>
-            <%= form.text_area :instructions, rows: 10, class: "form-control", 
+            <%= form.text_area :instructions, id: "recipe_instructions", rows: 10, class: "form-control", 
                                placeholder: "1. Preheat oven to 350°F\n2. Mix dry ingredients in a bowl\n3. In separate bowl, cream butter and sugar\n4. Add eggs and vanilla to butter mixture\n5. Gradually add dry ingredients..." %>
           </div>
 

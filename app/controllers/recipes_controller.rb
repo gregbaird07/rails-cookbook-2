@@ -42,6 +42,26 @@ class RecipesController < ApplicationController
     redirect_to recipes_path, notice: 'Recipe was successfully deleted.'
   end
 
+  def parse_url
+    url = params[:url]
+    
+    if url.blank?
+      render json: { error: 'URL is required' }, status: :bad_request
+      return
+    end
+    
+    parsed_data = RecipeUrlParser.parse(url)
+    
+    if parsed_data
+      render json: { success: true, recipe: parsed_data }
+    else
+      render json: { error: 'Could not parse recipe from this URL. Please try a different recipe website.' }, status: :unprocessable_entity
+    end
+  rescue => e
+    Rails.logger.error "Recipe URL parsing error: #{e.message}"
+    render json: { error: 'An error occurred while parsing the recipe URL.' }, status: :internal_server_error
+  end
+
   private
 
   def set_recipe
