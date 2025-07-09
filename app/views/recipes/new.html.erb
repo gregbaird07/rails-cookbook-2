@@ -17,7 +17,9 @@
       
       <div class="card-body">
         <!-- URL Parser Section -->
-        <div class="card mb-4 recipe-url-parser">
+        <div class="card mb-4 recipe-url-parser" 
+             data-controller="recipe-url-parser"
+             data-recipe-url-parser-parse-url-value="/recipes/parse_url">
           <div class="card-body">
             <h5 class="card-title">
               <i class="bi bi-link-45deg"></i> Import from Recipe URL
@@ -26,26 +28,32 @@
               Have a recipe URL? Paste it below and we'll try to automatically fill in the form fields.
             </p>
             
+            <!-- Hidden form for CSRF token handling -->
+            <%= form_with url: parse_url_recipes_path, method: :post, local: false, id: "parse-url-form", style: "display: none;" do |form| %>
+              <%= form.text_field :url, id: "hidden-url-field" %>
+            <% end %>
+            
             <div class="input-group mb-3">
               <input type="url" 
-                     id="recipe-url-input" 
+                     data-recipe-url-parser-target="urlInput"
                      class="form-control" 
                      placeholder="https://example.com/recipe-url">
               <button type="button" 
-                      id="parse-url-btn" 
+                      data-recipe-url-parser-target="parseButton"
+                      data-action="click->recipe-url-parser#parse"
                       class="btn btn-outline-primary">
                 <i class="bi bi-magic"></i> Parse Recipe
               </button>
             </div>
             
-            <div id="parse-error" class="alert alert-danger" style="display: none;"></div>
-            <div id="parse-success" class="alert alert-success" style="display: none;"></div>
+            <div data-recipe-url-parser-target="errorDiv" class="alert alert-danger" style="display: none;"></div>
+            <div data-recipe-url-parser-target="successDiv" class="alert alert-success" style="display: none;"></div>
             
             <small class="text-muted">
               <i class="bi bi-info-circle"></i>
-              Supports most popular recipe websites that use structured data (AllRecipes, Food Network, Taste of Home, etc.).
+              Supports most popular recipe websites that use structured data (Food.com, AllRecipes, Taste of Home, etc.).
               <br>
-              <strong>Example:</strong> https://www.allrecipes.com/recipe/213742/cheesy-chicken-broccoli-casserole/
+              <strong>Example:</strong> https://www.food.com/recipe/easy-chocolate-chip-cookies-16721
             </small>
           </div>
         </div>

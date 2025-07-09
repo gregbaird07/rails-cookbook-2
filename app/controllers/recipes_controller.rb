@@ -43,19 +43,38 @@ class RecipesController < ApplicationController
   end
 
   def parse_url
+    Rails.logger.info "=== PARSE_URL ACTION CALLED ==="
+    Rails.logger.info "Request method: #{request.method}"
+    Rails.logger.info "Content type: #{request.content_type}"
+    Rails.logger.info "Params: #{params.inspect}"
+    Rails.logger.info "Headers: X-CSRF-Token = #{request.headers['X-CSRF-Token']}"
+    Rails.logger.info "Headers: X-Requested-With = #{request.headers['X-Requested-With']}"
+    Rails.logger.info "Authenticity token valid? #{verified_request?}"
+    
+    # Handle both JSON and form data
     url = params[:url]
     
     if url.blank?
+      Rails.logger.error "URL parameter is blank"
       render json: { error: 'URL is required' }, status: :bad_request
       return
     end
     
-    parsed_data = RecipeUrlParser.parse(url)
+    Rails.logger.info "About to call RecipeUrlParser.parse with URL: #{url}"
+    
+    begin
+      parsed_data = RecipeUrlParser.parse(url)
+      Rails.logger.info "RecipeUrlParser returned: #{parsed_data.inspect}"
+    rescue => e
+      Rails.logger.error "RecipeUrlParser raised exception: #{e.message}"
+      Rails.logger.error "Backtrace: #{e.backtrace.first(3).join(', ')}"
+      parsed_data = nil
+    end
     
     if parsed_data
       render json: { success: true, recipe: parsed_data }
     else
-      render json: { error: 'Could not parse recipe from this URL. Please try a different recipe website.' }, status: :unprocessable_entity
+      render json: { error: 'Could not parse recipe from this URL. Please check that the URL is valid and points to a recipe page from a supported website (Food.com, AllRecipes, etc.).' }, status: :unprocessable_entity
     end
   rescue => e
     Rails.logger.error "Recipe URL parsing error: #{e.message}"
