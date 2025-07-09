@@ -71,11 +71,11 @@
                     </button>
                   </li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, method: :delete, data: { confirm: "Are you sure you want to logout?" }, class: "dropdown-item text-danger" %></li>
+                  <li><%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, data: { "turbo-method": :delete, confirm: "Are you sure you want to logout?" }, class: "dropdown-item text-danger" %></li>
                 </ul>
               </li>
               <li class="nav-item">
-                <%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, method: :delete, data: { confirm: "Are you sure you want to logout?" }, class: "btn btn-outline-light btn-sm ms-2", title: "Logout" %>
+                <%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, data: { "turbo-method": :delete, confirm: "Are you sure you want to logout?" }, class: "btn btn-outline-light btn-sm ms-2", title: "Logout" %>
               </li>
             <% else %>
               <li class="nav-item">

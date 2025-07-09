@@ -29,10 +29,9 @@
       <% if user_signed_in? && @recipe.user == current_user %>
         <div class="mb-4">
           <%= link_to "Edit Recipe", edit_recipe_path(@recipe), class: "btn btn-primary" %>
-          <%= link_to "Delete Recipe", @recipe, method: :delete, 
+          <%= link_to "Delete Recipe", @recipe, 
                       class: "btn btn-outline-danger",
-                      confirm: "Are you sure you want to delete this recipe?",
-                      data: { turbo_method: :delete } %>
+                      data: { "turbo-method": :delete, confirm: "Are you sure you want to delete this recipe?" } %>
         </div>
       <% end %>
     </div>
