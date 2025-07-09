@@ -14626,3 +14626,83 @@ Processing by RecipesController#show as HTML
 Completed 200 OK in 41ms (Views: 13.1ms | ActiveRecord: 0.7ms (4 queries, 0 cached) | GC: 0.3ms)
 
 
+Started GET "/recipes" for 209.128.219.248 at 2025-07-09 17:48:50 +0000
+Cannot render console from 209.128.219.248! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by RecipesController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering recipes/index.html.erb within layouts/application
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 24 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/index.html.erb:8
+  [1m[36mRecipe Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "recipes" LIMIT 1 /*action='index',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/index.html.erb:13
+  [1m[36mRecipe Load (0.2ms)[0m  [1m[34mSELECT "recipes".* FROM "recipes" ORDER BY "recipes"."created_at" DESC /*action='index',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/index.html.erb:15
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" IN (24, 20, 22, 21) /*action='index',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/index.html.erb:15
+  Rendered recipes/index.html.erb within layouts/application (Duration: 12.1ms | GC: 0.2ms)
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 24 /*action='index',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/layouts/application.html.erb:94
+  Rendered layout layouts/application.html.erb (Duration: 15.1ms | GC: 0.2ms)
+Completed 200 OK in 30ms (Views: 14.3ms | ActiveRecord: 1.1ms (5 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/recipes/49" for 209.128.219.248 at 2025-07-09 17:48:54 +0000
+Cannot render console from 209.128.219.248! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by RecipesController#show as HTML
+  Parameters: {"id" => "49"}
+  [1m[36mRecipe Load (0.2ms)[0m  [1m[34mSELECT "recipes".* FROM "recipes" WHERE "recipes"."id" = 49 LIMIT 1 /*action='show',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/controllers/recipes_controller.rb:87:in 'RecipesController#set_recipe'
+  Rendering layout layouts/application.html.erb
+  Rendering recipes/show.html.erb within layouts/application
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 20 LIMIT 1 /*action='show',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/show.html.erb:19
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 24 ORDER BY "users"."id" ASC LIMIT 1 /*action='show',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/recipes/show.html.erb:48
+  Rendered recipes/show.html.erb within layouts/application (Duration: 4.5ms | GC: 0.0ms)
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 24 /*action='show',application='RailsCookbook2',controller='recipes'*/[0m
+  ↳ app/views/layouts/application.html.erb:94
+  Rendered layout layouts/application.html.erb (Duration: 7.8ms | GC: 0.3ms)
+Completed 200 OK in 26ms (Views: 7.9ms | ActiveRecord: 0.4ms (4 queries, 0 cached) | GC: 0.3ms)
+
+
+Started GET "/users/20" for 209.128.219.248 at 2025-07-09 17:48:57 +0000
+Cannot render console from 209.128.219.248! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by UsersController#show as HTML
+  Parameters: {"id" => "20"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 20 LIMIT 1 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/controllers/users_controller.rb:12:in 'UsersController#set_user'
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 20 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/controllers/users_controller.rb:6:in 'UsersController#show'
+  Rendering layout layouts/application.html.erb
+  Rendering users/show.html.erb within layouts/application
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 24 ORDER BY "users"."id" ASC LIMIT 1 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/views/users/show.html.erb:43
+  [1m[36mRecipe Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "recipes" WHERE "recipes"."user_id" = 20 LIMIT 1 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/views/users/show.html.erb:66
+  [1m[36mRecipe Load (0.2ms)[0m  [1m[34mSELECT "recipes".* FROM "recipes" WHERE "recipes"."user_id" = 20 ORDER BY "recipes"."created_at" DESC LIMIT 12 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/views/users/show.html.erb:68
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM (SELECT 1 AS one FROM "recipes" WHERE "recipes"."user_id" = 20 LIMIT 12) subquery_for_count /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/views/users/show.html.erb:109
+  Rendered users/show.html.erb within layouts/application (Duration: 7.3ms | GC: 0.2ms)
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 24 /*action='show',application='RailsCookbook2',controller='users'*/[0m
+  ↳ app/views/layouts/application.html.erb:94
+  Rendered layout layouts/application.html.erb (Duration: 10.1ms | GC: 0.2ms)
+Completed 200 OK in 27ms (Views: 10.0ms | ActiveRecord: 0.7ms (7 queries, 0 cached) | GC: 0.2ms)
+
+
+Started GET "/" for 209.128.219.248 at 2025-07-09 17:49:07 +0000
+Cannot render console from 209.128.219.248! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by HomeController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 24 ORDER BY "users"."id" ASC LIMIT 1 /*action='index',application='RailsCookbook2',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:5
+  [1m[36mRecipe Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 24 /*action='index',application='RailsCookbook2',controller='home'*/[0m
+  ↳ app/views/home/index.html.erb:80
+  Rendered home/index.html.erb within layouts/application (Duration: 4.9ms | GC: 1.2ms)
+  [1m[36mCACHE Recipe Count (0.0ms)[0m  [1m[34mSELECT COUNT(*) FROM "recipes" WHERE "recipes"."user_id" = 24[0m
+  ↳ app/views/layouts/application.html.erb:94
+  Rendered layout layouts/application.html.erb (Duration: 7.0ms | GC: 1.2ms)
+Completed 200 OK in 23ms (Views: 7.1ms | ActiveRecord: 0.2ms (3 queries, 1 cached) | GC: 1.2ms)
+
+
