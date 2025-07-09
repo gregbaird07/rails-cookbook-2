@@ -10,20 +10,54 @@ class RecipeUrlParser
   end
 
   def parse
+    Rails.logger.info "=== RECIPE URL PARSER START ==="
+    Rails.logger.info "URL: #{@url}"
+    
     response = self.class.get(@url, headers: {
       'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     })
     
-    return nil unless response.success?
+    Rails.logger.info "HTTP Response: #{response.code} #{response.message}"
+    Rails.logger.info "Response success: #{response.success?}"
+    
+    unless response.success?
+      Rails.logger.error "HTTP request failed: #{response.code} #{response.message}"
+      return nil
+    end
     
     doc = Nokogiri::HTML(response.body)
+    Rails.logger.info "HTML parsed, document length: #{response.body.length}"
     
     # Try to parse JSON-LD structured data first (most common)
-    recipe_data = parse_json_ld(doc) || parse_microdata(doc) || parse_fallback(doc)
+    Rails.logger.info "Attempting JSON-LD parsing..."
+    recipe_data = parse_json_ld(doc)
     
+    if recipe_data
+      Rails.logger.info "JSON-LD parsing successful: #{recipe_data[:title]}"
+      return recipe_data
+    end
+    
+    Rails.logger.info "JSON-LD failed, attempting microdata parsing..."
+    recipe_data = parse_microdata(doc)
+    
+    if recipe_data
+      Rails.logger.info "Microdata parsing successful: #{recipe_data[:title]}"
+      return recipe_data
+    end
+    
+    Rails.logger.info "Microdata failed, attempting fallback parsing..."
+    recipe_data = parse_fallback(doc)
+    
+    if recipe_data
+      Rails.logger.info "Fallback parsing result: #{recipe_data[:title]}"
+      return recipe_data
+    end
+    
+    Rails.logger.error "All parsing methods failed"
     recipe_data
   rescue => e
     Rails.logger.error "Recipe URL parsing failed: #{e.message}"
+    Rails.logger.error "Backtrace: #{e.backtrace.first(3).join(', ')}"
     nil
   end
 
@@ -31,31 +65,43 @@ class RecipeUrlParser
 
   def parse_json_ld(doc)
     script_tags = doc.css('script[type="application/ld+json"]')
+    Rails.logger.info "Found #{script_tags.length} JSON-LD script tags"
     
-    script_tags.each do |script|
+    script_tags.each_with_index do |script, index|
       begin
+        Rails.logger.info "Processing JSON-LD script tag #{index + 1}"
         json_data = JSON.parse(script.content)
+        Rails.logger.info "JSON parsed successfully, type: #{json_data.class}"
         
         # Handle both single objects and arrays
         recipes = json_data.is_a?(Array) ? json_data : [json_data]
+        Rails.logger.info "Processing #{recipes.length} JSON items"
         
-        recipes.each do |item|
+        recipes.each_with_index do |item, item_index|
+          Rails.logger.info "Item #{item_index + 1}: @type = #{item['@type']}"
+          
           # Handle nested @graph structure
           if item['@graph']
-            item['@graph'].each do |graph_item|
+            Rails.logger.info "Found @graph with #{item['@graph'].length} items"
+            item['@graph'].each_with_index do |graph_item, graph_index|
+              Rails.logger.info "Graph item #{graph_index + 1}: @type = #{graph_item['@type']}"
               if graph_item['@type'] == 'Recipe'
+                Rails.logger.info "Found Recipe in @graph!"
                 return extract_recipe_data(graph_item)
               end
             end
           elsif item['@type'] == 'Recipe'
+            Rails.logger.info "Found direct Recipe!"
             return extract_recipe_data(item)
           end
         end
-      rescue JSON::ParserError
+      rescue JSON::ParserError => e
+        Rails.logger.error "JSON parsing failed for script #{index + 1}: #{e.message}"
         next
       end
     end
     
+    Rails.logger.info "No Recipe found in JSON-LD data"
     nil
   end
 
@@ -88,6 +134,14 @@ class RecipeUrlParser
   end
 
   def extract_recipe_data(recipe_json)
+    Rails.logger.info "=== EXTRACTING RECIPE DATA ==="
+    Rails.logger.info "Recipe JSON keys: #{recipe_json.keys}"
+    Rails.logger.info "recipeInstruction: #{recipe_json['recipeInstruction'].inspect}"
+    Rails.logger.info "recipeInstructions: #{recipe_json['recipeInstructions'].inspect}"
+    
+    instructions_data = recipe_json['recipeInstruction'] || recipe_json['recipeInstructions']
+    Rails.logger.info "Instructions data to process: #{instructions_data.inspect}"
+    
     {
       title: recipe_json['name'],
       description: recipe_json['description'],
@@ -95,7 +149,7 @@ class RecipeUrlParser
       cook_time: parse_duration(recipe_json['cookTime']),
       servings: parse_yield(recipe_json['recipeYield']),
       ingredients: extract_ingredients(recipe_json['recipeIngredient']),
-      instructions: extract_instructions(recipe_json['recipeInstruction'])
+      instructions: extract_instructions(instructions_data)
     }
   end
 
@@ -130,13 +184,23 @@ class RecipeUrlParser
   end
 
   def extract_instructions(instructions_data)
+    Rails.logger.info "=== EXTRACTING INSTRUCTIONS ==="
+    Rails.logger.info "Instructions data: #{instructions_data.inspect}"
+    Rails.logger.info "Instructions data class: #{instructions_data.class}"
+    
     return "" unless instructions_data
     
     instructions = instructions_data.is_a?(Array) ? instructions_data : [instructions_data]
-    instructions.map.with_index(1) do |instruction, index|
+    Rails.logger.info "Instructions array: #{instructions.inspect}"
+    
+    result = instructions.map.with_index(1) do |instruction, index|
       text = instruction.is_a?(Hash) ? instruction['text'] : instruction
+      Rails.logger.info "Instruction #{index}: #{text.inspect}"
       "#{index}. #{text}"
     end.join("\n")
+    
+    Rails.logger.info "Final instructions result: #{result}"
+    result
   end
 
   def extract_microdata_text(element, selector)
