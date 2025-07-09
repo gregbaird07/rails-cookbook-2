@@ -15,10 +15,29 @@
       <p class="lead text-muted"><%= @recipe.description %></p>
       
       <div class="d-flex align-items-center mb-3">
-        <span class="text-muted me-3">
-          <i class="bi bi-person"></i>
-          By <%= @recipe.user.display_name %>
-        </span>
+        <div class="d-flex align-items-center me-4">
+          <% if @recipe.user.avatar_url.present? %>
+            <img src="<%= @recipe.user.avatar_url %>" alt="<%= @recipe.user.display_name %>" 
+                 class="rounded-circle me-2" width="32" height="32" 
+                 style="object-fit: cover;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+            <div class="bg-secondary rounded-circle d-none align-items-center justify-content-center me-2" 
+                 style="width: 32px; height: 32px; font-size: 14px; font-weight: bold; color: white;">
+              <%= @recipe.user.initials %>
+            </div>
+          <% else %>
+            <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                 style="width: 32px; height: 32px; font-size: 14px; font-weight: bold; color: white;">
+              <%= @recipe.user.initials %>
+            </div>
+          <% end %>
+          <div>
+            <div class="fw-medium">By <%= link_to @recipe.user.display_name, user_path(@recipe.user), class: "text-decoration-none" %></div>
+            <% if @recipe.user.bio.present? %>
+              <small class="text-muted"><%= truncate(@recipe.user.bio, length: 60) %></small>
+            <% end %>
+          </div>
+        </div>
         <span class="text-muted">
           <i class="bi bi-calendar"></i>
           <%= @recipe.created_at.strftime("%B %d, %Y") %>

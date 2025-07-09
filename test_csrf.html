@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSRF Test</title>
+  <meta name="csrf-token" content="<%= form_authenticity_token %>" />
+</head>
+<body>
+  <h1>CSRF Test</h1>
+  
+  <form id="test-form">
+    <input type="text" id="test-input" placeholder="Enter test data">
+    <button type="submit">Test Submit</button>
+  </form>
+  
+  <div id="result"></div>
+  
+  <script>
+    document.getElementById('test-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const value = document.getElementById('test-input').value;
+      
+      try {
+        const response = await fetch('/recipes/parse_url', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': token,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({
+            url: value,
+            authenticity_token: token
+          }),
+          credentials: 'same-origin'
+        });
+        
+        const data = await response.json();
+        document.getElementById('result').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (error) {
+        document.getElementById('result').innerHTML = `<pre>Error: ${error.message}</pre>`;
+      }
+    });
+  </script>
+</body>
+</html>

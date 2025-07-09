@@ -15,6 +15,13 @@
             <%= render "devise/shared/error_messages", resource: resource %>
 
             <div class="mb-3">
+              <%= f.label :username, class: "form-label" %>
+              <small class="text-muted">(optional - you can add this later)</small>
+              <%= f.text_field :username, class: "form-control form-control-lg", 
+                              placeholder: "Choose a username" %>
+            </div>
+
+            <div class="mb-3">
               <%= f.label :email, class: "form-label" %>
               <%= f.email_field :email, autofocus: true, autocomplete: "email", 
                                 class: "form-control form-control-lg", 

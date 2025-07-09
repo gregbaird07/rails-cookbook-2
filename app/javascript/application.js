@@ -2,4 +2,3 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import * as bootstrap from "bootstrap"
-import "./recipe_url_parser"

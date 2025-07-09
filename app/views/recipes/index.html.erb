@@ -19,9 +19,23 @@
             <h5 class="card-title">
               <%= link_to recipe.title, recipe, class: "text-decoration-none" %>
             </h5>
-            <p class="card-text text-muted small">
-              By <%= recipe.user.display_name %> • 
-              <%= time_ago_in_words(recipe.created_at) %> ago
+            <p class="card-text text-muted small d-flex align-items-center">
+              <% if recipe.user.avatar_url.present? %>
+                <img src="<%= recipe.user.avatar_url %>" alt="<%= recipe.user.display_name %>" 
+                     class="rounded-circle me-2" width="20" height="20" 
+                     style="object-fit: cover;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                <div class="bg-secondary rounded-circle d-none align-items-center justify-content-center me-2" 
+                     style="width: 20px; height: 20px; font-size: 10px; font-weight: bold; color: white;">
+                  <%= recipe.user.initials %>
+                </div>
+              <% else %>
+                <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                     style="width: 20px; height: 20px; font-size: 10px; font-weight: bold; color: white;">
+                  <%= recipe.user.initials %>
+                </div>
+              <% end %>
+              <span>By <%= link_to recipe.user.display_name, user_path(recipe.user), class: "text-decoration-none" %> • <%= time_ago_in_words(recipe.created_at) %> ago</span>
             </p>
             <p class="card-text">
               <%= truncate(recipe.description, length: 120) %>
