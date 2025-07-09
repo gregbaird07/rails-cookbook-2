@@ -1,0 +1,464 @@
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+
+/*
+ * Dark Mode Implementation Following CSS Documentation Best Practices
+ * ================================================================
+ * 
+ * This stylesheet implements dark mode using the CSS documentation recommended approach:
+ * 
+ * 1. CSS Custom Properties (Variables): All colors are defined as CSS variables that can
+ *    be easily overridden for different themes.
+ * 
+ * 2. data-bs-theme Attribute: Uses Bootstrap 5.3+ recommended [data-bs-theme="dark"] 
+ *    selector instead of CSS classes. This approach is more semantic and integrates
+ *    better with Bootstrap's built-in dark mode support.
+ * 
+ * 3. System Preference Respect: Uses @media (prefers-color-scheme: dark) to automatically
+ *    apply dark theme when user's system is set to dark mode, but only when no explicit
+ *    theme is set via data-bs-theme attribute.
+ * 
+ * 4. Cascading Override: The specificity is designed so that explicit data-bs-theme
+ *    attributes take precedence over system preferences, allowing user choice to override
+ *    system settings.
+ * 
+ * Key Benefits:
+ * - Standards compliant and future-proof
+ * - Seamless Bootstrap integration
+ * - Automatic system preference detection
+ * - Smooth theme transitions
+ * - Maintainable and extensible
+ */
+
+// Custom styles for authentication
+.navbar-nav .dropdown {
+  position: relative;
+}
+
+.navbar-nav .dropdown-menu {
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  z-index: 1050; /* Ensure dropdown appears above other content */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  display: none; /* Hidden by default */
+}
+
+.navbar-nav .dropdown-menu.show {
+  display: block; /* Show when Bootstrap adds the 'show' class */
+}
+
+.navbar-nav .dropdown-toggle::after {
+  margin-left: 0.5em;
+}
+
+.navbar .btn {
+  border-radius: 0.375rem;
+}
+
+.navbar .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+// User status indicator
+.user-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Authentication forms
+.auth-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+// CSS Custom Properties for Theme System
+// Following CSS documentation best practices for theme switching
+// Using data-bs-theme attribute approach recommended by Bootstrap 5.3+
+
+:root {
+  // Default light theme colors
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+  --bs-primary: #0d6efd;
+  --bs-secondary: #6c757d;
+  --bs-success: #198754;
+  --bs-danger: #dc3545;
+  --bs-warning: #ffc107;
+  --bs-info: #0dcaf0;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+  
+  // Custom component colors
+  --card-bg: #ffffff;
+  --card-border: #dee2e6;
+  --card-header-bg: #f8f9fa;
+  
+  --navbar-bg: #0d6efd;
+  --navbar-color: #ffffff;
+  
+  --form-control-bg: #ffffff;
+  --form-control-border: #ced4da;
+  --form-control-color: #212529;
+  --form-control-focus-border: #86b7fe;
+  --form-control-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #dee2e6;
+  --dropdown-item-color: #212529;
+  --dropdown-item-hover-bg: #f8f9fa;
+  --dropdown-divider-bg: #dee2e6;
+  
+  --alert-success-bg: #d1e7dd;
+  --alert-success-border: #a3cfbb;
+  --alert-success-color: #0f5132;
+  --alert-danger-bg: #f8d7da;
+  --alert-danger-border: #f1aeb5;
+  --alert-danger-color: #721c24;
+  --alert-warning-bg: #fff3cd;
+  --alert-warning-border: #ffda6a;
+  --alert-warning-color: #664d03;
+  --alert-info-bg: #cff4fc;
+  --alert-info-border: #9eeaf9;
+  --alert-info-color: #055160;
+  
+  --text-muted: #6c757d;
+  --link-color: #0d6efd;
+  --link-hover-color: #0a58ca;
+}
+
+// Dark theme overrides using data-bs-theme attribute
+// This approach is recommended by Bootstrap 5.3+ and CSS documentation
+[data-bs-theme="dark"] {
+  --bs-body-bg: #1a1a1a;
+  --bs-body-color: #e9ecef;
+  --bs-primary: #4299e1;
+  --bs-secondary: #748096;
+  --bs-success: #48bb78;
+  --bs-danger: #e53e3e;
+  --bs-warning: #ed8936;
+  --bs-info: #63b3ed;
+  --bs-light: #2d3748;
+  --bs-dark: #1a202c;
+  
+  --card-bg: #2d3748;
+  --card-border: #4a5568;
+  --card-header-bg: #4a5568;
+  
+  --navbar-bg: #2d3748;
+  --navbar-color: #e9ecef;
+  
+  --form-control-bg: #4a5568;
+  --form-control-border: #718096;
+  --form-control-color: #e9ecef;
+  --form-control-focus-border: #4299e1;
+  --form-control-focus-shadow: 0 0 0 0.25rem rgba(66, 153, 225, 0.25);
+  
+  --dropdown-bg: #2d3748;
+  --dropdown-border: #4a5568;
+  --dropdown-item-color: #e9ecef;
+  --dropdown-item-hover-bg: #4a5568;
+  --dropdown-divider-bg: #4a5568;
+  
+  --alert-success-bg: rgba(72, 187, 120, 0.2);
+  --alert-success-border: #48bb78;
+  --alert-success-color: #c6f6d5;
+  --alert-danger-bg: rgba(229, 62, 62, 0.2);
+  --alert-danger-border: #e53e3e;
+  --alert-danger-color: #fed7d7;
+  --alert-warning-bg: rgba(237, 137, 54, 0.2);
+  --alert-warning-border: #ed8936;
+  --alert-warning-color: #feebc8;
+  --alert-info-bg: rgba(99, 179, 237, 0.2);
+  --alert-info-border: #63b3ed;
+  --alert-info-color: #bee3f8;
+  
+  --text-muted: #a0aec0;
+  --link-color: #4299e1;
+  --link-hover-color: #63b3ed;
+}
+
+// Apply the CSS variables to components
+body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+.navbar {
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-color);
+}
+
+// Bootstrap utility class overrides for dark mode compatibility
+.bg-light {
+  background-color: var(--bs-light) !important;
+  color: var(--bs-body-color) !important;
+}
+
+// Additional Bootstrap utility overrides for better dark mode support
+.bg-white {
+  background-color: var(--card-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.border {
+  border-color: var(--card-border) !important;
+}
+
+.border-top {
+  border-top-color: var(--card-border) !important;
+}
+
+.border-bottom {
+  border-bottom-color: var(--card-border) !important;
+}
+
+.border-start {
+  border-left-color: var(--card-border) !important;
+}
+
+.border-end {
+  border-right-color: var(--card-border) !important;
+}
+
+// Ensure proper contrast for text on light backgrounds in both themes
+.bg-light .text-muted {
+  color: var(--text-muted) !important;
+}
+
+.bg-white .text-muted {
+  color: var(--text-muted) !important;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--bs-body-color);
+}
+
+.card-header {
+  background-color: var(--card-header-bg);
+  border-color: var(--card-border);
+  color: var(--bs-body-color);
+}
+
+.form-control {
+  background-color: var(--form-control-bg);
+  border-color: var(--form-control-border);
+  color: var(--form-control-color);
+}
+
+.form-control:focus {
+  background-color: var(--form-control-bg);
+  border-color: var(--form-control-focus-border);
+  color: var(--form-control-color);
+  box-shadow: var(--form-control-focus-shadow);
+}
+
+.dropdown-menu {
+  background-color: var(--dropdown-bg);
+  border-color: var(--dropdown-border);
+}
+
+.dropdown-item {
+  color: var(--dropdown-item-color);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--dropdown-item-hover-bg);
+  color: var(--dropdown-item-color);
+}
+
+.dropdown-divider {
+  border-color: var(--dropdown-divider-bg);
+}
+
+.alert-success {
+  background-color: var(--alert-success-bg);
+  border-color: var(--alert-success-border);
+  color: var(--alert-success-color);
+}
+
+.alert-danger {
+  background-color: var(--alert-danger-bg);
+  border-color: var(--alert-danger-border);
+  color: var(--alert-danger-color);
+}
+
+.alert-warning {
+  background-color: var(--alert-warning-bg);
+  border-color: var(--alert-warning-border);
+  color: var(--alert-warning-color);
+}
+
+.alert-info {
+  background-color: var(--alert-info-bg);
+  border-color: var(--alert-info-border);
+  color: var(--alert-info-color);
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.auth-form {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+a {
+  color: var(--link-color);
+}
+
+a:hover {
+  color: var(--link-hover-color);
+}
+
+// Hero section styling with proper dark mode support
+.hero-section {
+  background-color: var(--bs-light) !important;
+  border: 1px solid var(--card-border);
+  color: var(--bs-body-color) !important;
+  
+  // Override any bg-light utility class styling
+  &.bg-light {
+    background-color: var(--bs-light) !important;
+    color: var(--bs-body-color) !important;
+  }
+  
+  // Ensure proper text contrast in both themes
+  .display-4 {
+    color: var(--bs-body-color) !important;
+  }
+  
+  .lead {
+    color: var(--bs-body-color) !important;
+  }
+  
+  // Ensure buttons have proper contrast in both themes
+  .btn-success {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+    color: white;
+  }
+  
+  .btn-outline-primary {
+    color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    
+    &:hover {
+      background-color: var(--bs-primary);
+      color: white;
+    }
+  }
+}
+
+// Ensure hero section works in dark mode with explicit dark theme values
+[data-bs-theme="dark"] .hero-section {
+  background-color: #2d3748 !important;
+  color: #e9ecef !important;
+  border-color: #4a5568 !important;
+  
+  .display-4, .lead {
+    color: #e9ecef !important;
+  }
+}
+
+// Recipe-specific styles
+.ingredients-list, .instructions-list {
+  line-height: 1.8;
+  
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.recipe-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.difficulty-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+// Form styling
+.recipe-form {
+  .form-label {
+    font-weight: 600;
+    color: var(--bs-dark);
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+}
+
+// Respect user's system preference when no explicit theme is set
+// This media query applies dark theme when user prefers dark mode
+// and no data-bs-theme attribute is explicitly set on html element
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bs-theme]) {
+    // Apply the same dark theme variables as [data-bs-theme="dark"]
+    // This ensures consistent theming whether set by user preference or manual toggle
+    --bs-body-bg: #1a1a1a;
+    --bs-body-color: #e9ecef;
+    --bs-primary: #4299e1;
+    --bs-secondary: #748096;
+    --bs-success: #48bb78;
+    --bs-danger: #e53e3e;
+    --bs-warning: #ed8936;
+    --bs-info: #63b3ed;
+    --bs-light: #2d3748;
+    --bs-dark: #1a202c;
+    
+    --card-bg: #2d3748;
+    --card-border: #4a5568;
+    --card-header-bg: #4a5568;
+    
+    --navbar-bg: #2d3748;
+    --navbar-color: #e9ecef;
+    
+    --form-control-bg: #4a5568;
+    --form-control-border: #718096;
+    --form-control-color: #e9ecef;
+    --form-control-focus-border: #4299e1;
+    --form-control-focus-shadow: 0 0 0 0.25rem rgba(66, 153, 225, 0.25);
+    
+    --dropdown-bg: #2d3748;
+    --dropdown-border: #4a5568;
+    --dropdown-item-color: #e9ecef;
+    --dropdown-item-hover-bg: #4a5568;
+    --dropdown-divider-bg: #4a5568;
+    
+    --alert-success-bg: rgba(72, 187, 120, 0.2);
+    --alert-success-border: #48bb78;
+    --alert-success-color: #c6f6d5;
+    --alert-danger-bg: rgba(229, 62, 62, 0.2);
+    --alert-danger-border: #e53e3e;
+    --alert-danger-color: #fed7d7;
+    --alert-warning-bg: rgba(237, 137, 54, 0.2);
+    --alert-warning-border: #ed8936;
+    --alert-warning-color: #feebc8;
+    --alert-info-bg: rgba(99, 179, 237, 0.2);
+    --alert-info-border: #63b3ed;
+    --alert-info-color: #bee3f8;
+    
+    --text-muted: #a0aec0;
+    --link-color: #4299e1;
+    --link-hover-color: #63b3ed;
+  }
+}

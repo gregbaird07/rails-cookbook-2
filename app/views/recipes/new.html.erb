@@ -1,0 +1,71 @@
+<% content_for :title, "New Recipe - Recipe Cookbook" %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><%= link_to "All Recipes", recipes_path %></li>
+        <li class="breadcrumb-item active" aria-current="page">New Recipe</li>
+      </ol>
+    </nav>
+
+    <div class="card">
+      <div class="card-header">
+        <h1><i class="bi bi-plus-circle"></i> Create New Recipe</h1>
+        <p class="card-text">Share your favorite recipe with the community!</p>
+      </div>
+      
+      <div class="card-body">
+        <%= form_with model: @recipe, local: true do |form| %>
+          <%= render 'shared/error_messages', object: @recipe %>
+
+          <div class="mb-3">
+            <%= form.label :title, class: "form-label" %>
+            <%= form.text_field :title, class: "form-control form-control-lg", 
+                                placeholder: "e.g., Grandma's Chocolate Chip Cookies" %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :description, class: "form-label" %>
+            <%= form.text_area :description, rows: 3, class: "form-control", 
+                               placeholder: "Brief description of your recipe and what makes it special..." %>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <%= form.label :prep_time, "Prep Time (minutes)", class: "form-label" %>
+              <%= form.number_field :prep_time, class: "form-control", min: 0, placeholder: "15" %>
+            </div>
+            <div class="col-md-4 mb-3">
+              <%= form.label :cook_time, "Cook Time (minutes)", class: "form-label" %>
+              <%= form.number_field :cook_time, class: "form-control", min: 0, placeholder: "30" %>
+            </div>
+            <div class="col-md-4 mb-3">
+              <%= form.label :servings, class: "form-label" %>
+              <%= form.number_field :servings, class: "form-control", min: 1, placeholder: "4" %>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :ingredients, class: "form-label" %>
+            <small class="text-muted">(Use bullet points • for each ingredient)</small>
+            <%= form.text_area :ingredients, rows: 8, class: "form-control", 
+                               placeholder: "• 2 cups all-purpose flour\n• 1 cup sugar\n• 1/2 cup butter\n• 2 eggs\n• 1 tsp vanilla extract" %>
+          </div>
+
+          <div class="mb-4">
+            <%= form.label :instructions, class: "form-label" %>
+            <small class="text-muted">(Number each step)</small>
+            <%= form.text_area :instructions, rows: 10, class: "form-control", 
+                               placeholder: "1. Preheat oven to 350°F\n2. Mix dry ingredients in a bowl\n3. In separate bowl, cream butter and sugar\n4. Add eggs and vanilla to butter mixture\n5. Gradually add dry ingredients..." %>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to "Cancel", recipes_path, class: "btn btn-outline-secondary" %>
+            <%= form.submit "Create Recipe", class: "btn btn-success btn-lg" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

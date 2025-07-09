@@ -1,0 +1,14 @@
+<% if object.errors.any? %>
+  <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+    <h6 class="alert-heading">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <%= pluralize(object.errors.count, "error") %> prohibited this recipe from being saved:
+    </h6>
+    <ul class="mb-0 ps-3">
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
