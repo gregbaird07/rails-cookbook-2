@@ -1,0 +1,53 @@
+<% content_for :title, "Sign Up - Recipe Cookbook" %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <h2 class="card-title mb-2">Join Recipe Cookbook</h2>
+            <p class="text-muted">Create your account to start cooking!</p>
+          </div>
+
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name), 
+                       html: { "data-turbo" => "false" }) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+
+            <div class="mb-3">
+              <%= f.label :email, class: "form-label" %>
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", 
+                                class: "form-control form-control-lg", 
+                                placeholder: "Enter your email" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :password, class: "form-label" %>
+              <% if @minimum_password_length %>
+                <small class="text-muted">(<%= @minimum_password_length %> characters minimum)</small>
+              <% end %>
+              <%= f.password_field :password, autocomplete: "new-password", 
+                                  class: "form-control form-control-lg", 
+                                  placeholder: "Create a password" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :password_confirmation, "Confirm Password", class: "form-label" %>
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", 
+                                  class: "form-control form-control-lg", 
+                                  placeholder: "Confirm your password" %>
+            </div>
+
+            <div class="d-grid mb-3">
+              <%= f.submit "Create Account", class: "btn btn-success btn-lg" %>
+            </div>
+          <% end %>
+
+          <div class="text-center">
+            <%= render "devise/shared/links" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

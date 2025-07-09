@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Rails Cookbook 2" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <%= link_to "Recipe Cookbook", root_path, class: "navbar-brand" %>
+        
+        <!-- Debug user status -->
+        <% if Rails.env.development? %>
+          <small class="text-light">
+            DEBUG: <%= user_signed_in? ? "LOGGED IN as #{current_user&.email}" : "NOT LOGGED IN" %>
+          </small>
+        <% end %>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <%= link_to "All Recipes", recipes_path, class: "nav-link" %>
+            </li>
+            <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Add Recipe", new_recipe_path, class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+          
+          <ul class="navbar-nav">
+            <% if user_signed_in? %>
+              <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle user-status btn btn-link border-0 p-0" type="button" aria-expanded="false" style="text-decoration: none; color: inherit;" onclick="toggleUserDropdown(this)">
+                  <i class="bi bi-person-circle text-success"></i> 
+                  <span class="d-none d-md-inline">Hello, <%= current_user.email.split('@').first.humanize %></span>
+                  <span class="d-md-none"><%= current_user.email.split('@').first.humanize %></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><h6 class="dropdown-header">
+                    <i class="bi bi-envelope"></i> <%= current_user.email %>
+                  </h6></li>
+                  <li><%= link_to "Edit Profile", edit_user_registration_path, class: "dropdown-item" %></li>
+                  <li><%= link_to '<i class="bi bi-book"></i> My Recipes <span class="badge bg-secondary ms-1">'.html_safe + current_user.recipes.count.to_s + '</span>'.html_safe, recipes_path(user: current_user.id), class: "dropdown-item" %></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <button class="dropdown-item" onclick="toggleDarkMode()" id="darkModeToggle">
+                      <i class="bi bi-moon"></i> Dark Mode
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, method: :delete, data: { confirm: "Are you sure you want to logout?" }, class: "dropdown-item text-danger" %></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <%= link_to '<i class="bi bi-box-arrow-right"></i> Logout'.html_safe, destroy_user_session_path, method: :delete, data: { confirm: "Are you sure you want to logout?" }, class: "btn btn-outline-light btn-sm ms-2", title: "Logout" %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <button class="btn btn-outline-light me-2" onclick="toggleDarkMode()" id="darkModeToggleGuest">
+                  <i class="bi bi-moon"></i>
+                </button>
+              </li>
+              <li class="nav-item">
+                <%= link_to '<i class="bi bi-box-arrow-in-right"></i> Login'.html_safe, new_user_session_path, class: "btn btn-outline-light me-2" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to '<i class="bi bi-person-plus"></i> Sign Up'.html_safe, new_user_registration_path, class: "btn btn-light" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <% flash.each do |type, message| %>
+      <% next if message.blank? %>
+      <% 
+        css_class = case type.to_s
+                   when 'notice', 'success' then 'alert-success'
+                   when 'alert', 'error' then 'alert-danger'
+                   when 'warning' then 'alert-warning'
+                   else 'alert-info'
+                   end
+      %>
+      <div class="alert <%= css_class %> alert-dismissible fade show" role="alert">
+        <i class="bi bi-<%= type.to_s == 'notice' || type.to_s == 'success' ? 'check-circle' : 'exclamation-triangle' %>"></i>
+        <%= message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
+    <main class="container mt-4">
+      <%= yield %>
+    </main>
+
+    <script>
+      // Simple dropdown toggle function
+      function toggleUserDropdown(button) {
+        console.log("toggleUserDropdown called");
+        const dropdown = button.parentElement;
+        const menu = dropdown.querySelector('.dropdown-menu');
+        
+        if (menu) {
+          if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            button.setAttribute('aria-expanded', 'false');
+            console.log("Dropdown closed");
+          } else {
+            // Close any other open dropdowns
+            document.querySelectorAll('.dropdown-menu.show').forEach(openMenu => {
+              openMenu.classList.remove('show');
+            });
+            
+            menu.classList.add('show');
+            button.setAttribute('aria-expanded', 'true');
+            console.log("Dropdown opened");
+          }
+        } else {
+          console.error("Dropdown menu not found");
+        }
+      }
+      
+      // Dark mode toggle function (inline to ensure availability)
+      function toggleDarkMode() {
+        console.log("toggleDarkMode called");
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Store the preference
+        localStorage.setItem('theme', newTheme);
+        
+        // Apply the theme
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+        
+        // Update toggle buttons
+        updateThemeToggleButtons(newTheme);
+        
+        console.log("Theme switched to:", newTheme);
+      }
+      
+      // Update theme toggle button text and icons
+      function updateThemeToggleButtons(theme) {
+        const toggle = document.getElementById('darkModeToggle');
+        const toggleGuest = document.getElementById('darkModeToggleGuest');
+        
+        if (theme === 'dark') {
+          if (toggle) {
+            toggle.innerHTML = '<i class="bi bi-sun"></i> Light Mode';
+          }
+          if (toggleGuest) {
+            toggleGuest.innerHTML = '<i class="bi bi-sun"></i>';
+            toggleGuest.title = 'Switch to light mode';
+          }
+        } else {
+          if (toggle) {
+            toggle.innerHTML = '<i class="bi bi-moon"></i> Dark Mode';
+          }
+          if (toggleGuest) {
+            toggleGuest.innerHTML = '<i class="bi bi-moon"></i>';
+            toggleGuest.title = 'Switch to dark mode';
+          }
+        }
+      }
+      
+      // Initialize theme on page load
+      function initializeTheme() {
+        const storedTheme = localStorage.getItem('theme');
+        let preferredTheme;
+        
+        if (storedTheme) {
+          preferredTheme = storedTheme;
+        } else {
+          // Respect user's system preference if no stored theme
+          preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        
+        document.documentElement.setAttribute('data-bs-theme', preferredTheme);
+        updateThemeToggleButtons(preferredTheme);
+        console.log("Theme initialized to:", preferredTheme);
+      }
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.dropdown')) {
+          document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+            const toggle = menu.parentElement.querySelector('.dropdown-toggle');
+            if (toggle) {
+              toggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      });
+      
+      // Initialize theme when DOM is ready
+      document.addEventListener('DOMContentLoaded', initializeTheme);
+      
+      // Listen for system theme changes
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        const storedTheme = localStorage.getItem('theme');
+        if (!storedTheme) {
+          const newTheme = e.matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-bs-theme', newTheme);
+          updateThemeToggleButtons(newTheme);
+        }
+      });
+    </script>
+
+  </body>
+</html>
