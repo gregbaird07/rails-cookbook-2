@@ -1,9 +1,9 @@
 <% content_for :title, "Welcome to Recipe Cookbook" %>
 
-<div class="hero-section bg-light p-5 rounded-3 mb-4">
+<div class="hero-section bg-body-secondary p-5 rounded-3 mb-4">
   <div class="container-fluid py-5">
     <% if user_signed_in? %>
-      <h1 class="display-4 fw-bold">Welcome Chef, <%= current_user.display_name %>!</h1>
+      <h1 class="display-4 fw-bold">Welcome Chef <%= current_user.display_name.capitalize %>!</h1>
       <p class="col-md-8 fs-4 lead">Ready to cook something amazing? Browse your recipes or discover new culinary adventures.</p>
     <% else %>
       <h1 class="display-4 fw-bold">Welcome to Recipe Cookbook</h1>
