@@ -19,6 +19,22 @@
   </div>
 </div>
 
+<% if user_signed_in? && !current_user.profile_complete? %>
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-person-plus-fill me-2"></i>
+      <div>
+        <strong>Complete Your Profile!</strong>
+        <p class="mb-0">Add a username and bio to personalize your recipe sharing experience and connect with other food enthusiasts.</p>
+      </div>
+    </div>
+    <div class="mt-2">
+      <%= link_to "Complete Profile", edit_user_registration_path, class: "btn btn-sm btn-info me-2" %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-md-4">
     <div class="card h-100">
