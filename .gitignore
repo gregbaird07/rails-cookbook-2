@@ -39,3 +39,7 @@
 
 # Ignore seeds file with sensitive data
 /db/seeds.rb
+
+# Ignore Kamal secrets and environment files
+/.kamal/secrets
+/.env
