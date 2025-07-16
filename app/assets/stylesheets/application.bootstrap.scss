@@ -438,6 +438,35 @@ a:hover {
   }
 }
 
+// Specific styling for recipe URL parser to ensure proper theme adaptation
+.recipe-url-parser {
+  background-color: var(--card-header-bg) !important;
+  border-color: var(--card-border) !important;
+  color: var(--bs-body-color) !important;
+}
+
+// Target the nested card structure specifically
+.recipe-url-parser.card {
+  background-color: var(--card-bg) !important;
+}
+
+.recipe-url-parser .card-body {
+  background-color: var(--card-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.recipe-url-parser .card-title {
+  color: var(--bs-body-color) !important;
+}
+
+.recipe-url-parser .card-text {
+  color: var(--bs-body-color) !important;
+}
+
+.recipe-url-parser .text-muted {
+  color: var(--text-muted) !important;
+}
+
 // Respect user's system preference when no explicit theme is set
 // This media query applies dark theme when user prefers dark mode
 // and no data-bs-theme attribute is explicitly set on html element
