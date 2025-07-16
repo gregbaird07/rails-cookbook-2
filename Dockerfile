@@ -55,14 +55,14 @@ RUN yarn install --immutable
 # Copy application code
 COPY . .
 
+# Make all bin scripts executable
+RUN chmod +x bin/*
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-# Ensure docker-entrypoint is executable
-RUN chmod +x bin/docker-entrypoint
 
 RUN rm -rf node_modules
 
