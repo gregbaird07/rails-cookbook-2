@@ -30,7 +30,7 @@
             
             <!-- Hidden form for CSRF token handling -->
             <%= form_with url: parse_url_recipes_path, method: :post, local: false, id: "parse-url-form", style: "display: none;" do |form| %>
-              <%= form.text_field :url, id: "hidden-url-field" %>
+              <%= form.hidden_field :url, id: "hidden-url-field" %>
             <% end %>
             
             <div class="input-group mb-3">
