@@ -1,0 +1,76 @@
+<% content_for :title, "Edit #{@collection.name} - Recipe Cookbook" %>
+
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="bi bi-pencil"></i> Edit Collection</h3>
+      </div>
+      <div class="card-body">
+        <%= form_with model: @collection, local: true, class: "needs-validation", novalidate: true do |form| %>
+          <% if @collection.errors.any? %>
+            <div class="alert alert-danger">
+              <h6>Please fix the following errors:</h6>
+              <ul class="mb-0">
+                <% @collection.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= form.label :name, class: "form-label" %>
+            <% if @collection.favorites? %>
+              <%= form.text_field :name, class: "form-control", disabled: true %>
+              <div class="form-text">The favorites collection name cannot be changed.</div>
+            <% else %>
+              <%= form.text_field :name, class: "form-control", required: true %>
+              <div class="invalid-feedback">
+                Please provide a collection name.
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :description, class: "form-label" %>
+            <%= form.text_area :description, class: "form-control", rows: 3 %>
+            <div class="form-text">Optional description to help others understand your collection.</div>
+          </div>
+
+          <div class="mb-4">
+            <div class="form-check">
+              <%= form.check_box :is_public, class: "form-check-input" %>
+              <%= form.label :is_public, "Make this collection public", class: "form-check-label" %>
+            </div>
+            <div class="form-text">Public collections can be viewed by all users. Private collections are only visible to you.</div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to "Cancel", @collection, class: "btn btn-secondary" %>
+            <%= form.submit "Update Collection", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>

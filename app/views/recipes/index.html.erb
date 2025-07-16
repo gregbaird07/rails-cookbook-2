@@ -10,6 +10,27 @@
   <% end %>
 </div>
 
+<!-- Sorting Options -->
+<div class="mb-4">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <div class="btn-group" role="group" aria-label="Sort options">
+        <%= link_to "Latest", recipes_path(user: params[:user]), 
+                    class: "btn #{'btn-primary' if params[:sort].blank?} #{'btn-outline-primary' unless params[:sort].blank?}" %>
+        <%= link_to "Highest Rated", recipes_path(user: params[:user], sort: 'rating'), 
+                    class: "btn #{'btn-primary' if params[:sort] == 'rating'} #{'btn-outline-primary' unless params[:sort] == 'rating'}" %>
+        <%= link_to "Most Reviewed", recipes_path(user: params[:user], sort: 'reviews'), 
+                    class: "btn #{'btn-primary' if params[:sort] == 'reviews'} #{'btn-outline-primary' unless params[:sort] == 'reviews'}" %>
+      </div>
+    </div>
+    <div class="col-md-6 text-end">
+      <small class="text-muted">
+        Showing <%= @recipes.count %> recipe<%= 's' unless @recipes.count == 1 %>
+      </small>
+    </div>
+  </div>
+</div>
+
 <% if @recipes.any? %>
   <div class="row">
     <% @recipes.each do |recipe| %>
@@ -42,17 +63,36 @@
             </p>
             
             <div class="row text-center mb-3">
-              <div class="col-4">
+              <div class="col-3">
                 <small class="text-muted">Prep</small><br>
                 <strong><%= recipe.prep_time %> min</strong>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <small class="text-muted">Cook</small><br>
                 <strong><%= recipe.cook_time %> min</strong>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <small class="text-muted">Serves</small><br>
                 <strong><%= recipe.servings %></strong>
+              </div>
+              <div class="col-3">
+                <small class="text-muted">Rating</small><br>
+                <% if recipe.total_reviews > 0 %>
+                  <div class="text-warning small">
+                    <% (1..5).each do |i| %>
+                      <% if i <= recipe.average_rating %>
+                        <i class="bi bi-star-fill"></i>
+                      <% elsif i - 0.5 <= recipe.average_rating %>
+                        <i class="bi bi-star-half"></i>
+                      <% else %>
+                        <i class="bi bi-star"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                  <small class="text-muted"><%= recipe.total_reviews %> review<%= 's' if recipe.total_reviews != 1 %></small>
+                <% else %>
+                  <small class="text-muted">No reviews</small>
+                <% end %>
               </div>
             </div>
           </div>

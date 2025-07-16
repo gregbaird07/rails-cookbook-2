@@ -1,5 +1,8 @@
 <% content_for :title, "#{@recipe.title} - Recipe Cookbook" %>
 
+<!-- Notifications container for Turbo Stream updates -->
+<div id="notifications" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
 <div class="row">
   <div class="col-lg-8">
     <!-- Recipe Header -->
@@ -51,6 +54,23 @@
           <%= link_to "Delete Recipe", @recipe, 
                       class: "btn btn-outline-danger",
                       data: { "turbo-method": :delete, confirm: "Are you sure you want to delete this recipe?" } %>
+        </div>
+      <% elsif user_signed_in? %>
+        <!-- Favorites and Collections for other users -->
+        <div class="mb-4">
+          <div class="btn-group me-2">
+            <%= render 'shared/favorite_button', recipe: @recipe %>
+          </div>
+          
+          <%= render 'shared/collections_dropdown', recipe: @recipe %>
+        </div>
+      <% else %>
+        <!-- Sign in prompt for guests -->
+        <div class="mb-4">
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            <%= link_to "Sign in", new_user_session_path, class: "alert-link" %> to add this recipe to your favorites or collections.
+          </div>
         </div>
       <% end %>
     </div>
@@ -156,5 +176,163 @@
         <%= link_to "View #{@recipe.user.display_name}'s Recipes", recipes_path(user: @recipe.user.id), class: "btn btn-outline-secondary w-100" %>
       </div>
     </div>
+
+    <!-- Reviews and Ratings Section -->
+    <div class="card mt-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>
+          <i class="bi bi-star-fill"></i> 
+          Reviews & Ratings 
+          <span class="badge bg-secondary ms-2"><%= @recipe.total_reviews %></span>
+        </h5>
+        <% if @recipe.total_reviews > 0 %>
+          <div class="d-flex align-items-center">
+            <div class="text-warning me-2">
+              <% (1..5).each do |i| %>
+                <% if i <= @recipe.average_rating %>
+                  <i class="bi bi-star-fill"></i>
+                <% elsif i - 0.5 <= @recipe.average_rating %>
+                  <i class="bi bi-star-half"></i>
+                <% else %>
+                  <i class="bi bi-star"></i>
+                <% end %>
+              <% end %>
+            </div>
+            <span class="fw-bold"><%= @recipe.average_rating %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if user_signed_in? %>
+          <% if @recipe.user == current_user %>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle"></i>
+              You can't review your own recipe.
+            </div>
+          <% elsif @recipe.reviewed_by?(current_user) %>
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle"></i>
+              You have already reviewed this recipe.
+            </div>
+          <% else %>
+            <!-- Add Review Form -->
+            <div class="mb-4">
+              <h6>Add Your Review</h6>
+              <%= form_with model: [@recipe, @review], local: true, class: "needs-validation", novalidate: true do |form| %>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <%= form.label :rating, class: "form-label" %>
+                    <%= form.select :rating, options_for_select([
+                      ['5 stars - Excellent', 5],
+                      ['4 stars - Very Good', 4], 
+                      ['3 stars - Good', 3],
+                      ['2 stars - Fair', 2],
+                      ['1 star - Poor', 1]
+                    ]), { prompt: 'Select a rating' }, { class: "form-select", required: true } %>
+                    <div class="invalid-feedback">
+                      Please select a rating.
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <%= form.label :comment, class: "form-label" %>
+                  <%= form.text_area :comment, class: "form-control", rows: 3, placeholder: "Share your thoughts about this recipe...", required: true %>
+                  <div class="invalid-feedback">
+                    Please provide a comment (minimum 10 characters).
+                  </div>
+                </div>
+                <%= form.submit "Submit Review", class: "btn btn-primary" %>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="alert alert-warning">
+            <i class="bi bi-person-plus"></i>
+            <%= link_to "Sign in", new_user_session_path, class: "alert-link" %> to leave a review.
+          </div>
+        <% end %>
+
+        <!-- Display Reviews -->
+        <% if @reviews.any? %>
+          <hr>
+          <h6>Reviews (<%= @reviews.count %>)</h6>
+          <% @reviews.each do |review| %>
+            <div class="border rounded p-3 mb-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center">
+                  <% if review.user.avatar_url.present? %>
+                    <img src="<%= review.user.avatar_url %>" alt="<%= review.user.display_name %>" 
+                         class="rounded-circle me-2" width="40" height="40" 
+                         style="object-fit: cover;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <div class="bg-secondary rounded-circle d-none align-items-center justify-content-center me-2" 
+                         style="width: 40px; height: 40px; font-size: 16px; font-weight: bold; color: white;">
+                      <%= review.user.initials %>
+                    </div>
+                  <% else %>
+                    <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                         style="width: 40px; height: 40px; font-size: 16px; font-weight: bold; color: white;">
+                      <%= review.user.initials %>
+                    </div>
+                  <% end %>
+                  <div>
+                    <div class="fw-medium"><%= review.user.display_name %></div>
+                    <div class="text-warning">
+                      <% (1..5).each do |i| %>
+                        <% if i <= review.rating %>
+                          <i class="bi bi-star-fill"></i>
+                        <% else %>
+                          <i class="bi bi-star"></i>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <small class="text-muted">
+                    <%= time_ago_in_words(review.created_at) %> ago
+                  </small>
+                  <% if user_signed_in? && (review.user == current_user || @recipe.user == current_user) %>
+                    <div class="mt-1">
+                      <%= link_to "Delete", [@recipe, review], method: :delete, 
+                                  class: "btn btn-sm btn-outline-danger",
+                                  data: { 
+                                    confirm: "Are you sure you want to delete this review?",
+                                    turbo_method: :delete
+                                  } %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <p class="mb-0"><%= review.comment %></p>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="text-center text-muted py-4">
+            <i class="bi bi-chat-square-dots" style="font-size: 2rem;"></i>
+            <p class="mt-2">No reviews yet. Be the first to review this recipe!</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>

@@ -1,0 +1,34 @@
+<div id="collections-dropdown-<%= recipe.id %>" class="dropdown d-inline-block" data-controller="collection-add">
+  <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+    <i class="bi bi-collection"></i> Add to Collection
+  </button>
+  <ul class="dropdown-menu">
+    <% current_user.collections.each do |collection| %>
+      <li>
+        <% if collection.contains_recipe?(recipe) %>
+          <span class="dropdown-item text-muted">
+            <i class="bi bi-check"></i> Already in <%= collection.name %>
+          </span>
+        <% else %>
+          <%= link_to add_recipe_to_collection_path(collection, recipe), 
+                      method: :post, 
+                      class: "dropdown-item",
+                      data: { 
+                        turbo_method: :post,
+                        action: "click->collection-add#addRecipe"
+                      } do %>
+            <i class="bi bi-plus"></i> <%= collection.name %>
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+    <% if current_user.collections.any? %>
+      <li><hr class="dropdown-divider"></li>
+    <% end %>
+    <li>
+      <%= link_to new_collection_path, class: "dropdown-item" do %>
+        <i class="bi bi-plus-circle"></i> Create New Collection
+      <% end %>
+    </li>
+  </ul>
+</div>

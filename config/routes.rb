@@ -12,10 +12,26 @@ Rails.application.routes.draw do
     collection do
       post :parse_url
     end
+    
+    # Nested reviews routes
+    resources :reviews, only: [:create, :destroy]
+    
+    # Favorites toggle
+    post 'favorite', to: 'favorites#toggle'
   end
-
-  # User profile routes
-  resources :users, only: [:show]
+  
+  # Collections routes
+  resources :collections do
+    member do
+      post 'add_recipe/:recipe_id', to: 'collections#add_recipe', as: 'add_recipe_to'
+      delete 'remove_recipe/:recipe_id', to: 'collections#remove_recipe', as: 'remove_recipe_from'
+    end
+  end
+  
+  # User profile routes with nested collections
+  resources :users, only: [:show] do
+    resources :collections, only: [:index]
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

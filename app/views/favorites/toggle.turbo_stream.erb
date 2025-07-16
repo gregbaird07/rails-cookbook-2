@@ -1,0 +1,14 @@
+<%= turbo_stream.replace "favorite-button-#{@recipe.id}" do %>
+  <%= render partial: 'shared/favorite_button', locals: { recipe: @recipe } %>
+<% end %>
+
+<%= turbo_stream.prepend "notifications" do %>
+  <div class="alert alert-<%= @favorited ? 'success' : 'info' %> alert-dismissible show" 
+       role="alert" 
+       data-controller="auto-dismiss"
+       style="background-color: <%= @favorited ? '#2d7d32' : '#1976d2' %> !important; border-color: <%= @favorited ? '#48bb78' : '#63b3ed' %> !important; color: <%= @favorited ? '#c6f6d5' : '#bee3f8' %> !important; opacity: 1 !important;">
+    <i class="bi bi-<%= @favorited ? 'heart-fill' : 'heart' %>"></i>
+    <%= @message %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% end %>

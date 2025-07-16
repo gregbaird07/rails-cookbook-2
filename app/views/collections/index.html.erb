@@ -1,0 +1,101 @@
+<% content_for :title, "Recipe Collections - Recipe Cookbook" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>
+    <i class="bi bi-collection"></i>
+    <%= @user ? "#{@user.display_name}'s Collections" : "Recipe Collections" %>
+  </h1>
+  <% if user_signed_in? %>
+    <%= link_to "New Collection", new_collection_path, class: "btn btn-success" %>
+  <% end %>
+</div>
+
+<% if @user && @user == current_user %>
+  <!-- User's own collections page - show all including private -->
+  <div class="alert alert-info">
+    <i class="bi bi-info-circle"></i>
+    You can see all your collections here, including private ones. Others can only see your public collections.
+  </div>
+<% end %>
+
+<% if @collections.any? %>
+  <div class="row">
+    <% @collections.each do |collection| %>
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 collection-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title">
+                <%= link_to collection.name, collection, class: "text-decoration-none" %>
+                <% unless collection.is_public %>
+                  <i class="bi bi-lock-fill text-muted ms-1" title="Private collection"></i>
+                <% end %>
+              </h5>
+              <% if collection.favorites? %>
+                <span class="badge bg-danger">
+                  <i class="bi bi-heart-fill"></i>
+                </span>
+              <% end %>
+            </div>
+            
+            <% if collection.description.present? %>
+              <p class="card-text text-muted">
+                <%= truncate(collection.description, length: 100) %>
+              </p>
+            <% end %>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <small class="text-muted">
+                <i class="bi bi-person"></i>
+                <%= link_to collection.user.display_name, user_path(collection.user), class: "text-decoration-none" %>
+              </small>
+              <small class="text-muted">
+                <i class="bi bi-calendar"></i>
+                <%= time_ago_in_words(collection.updated_at) %> ago
+              </small>
+            </div>
+            
+            <div class="row text-center">
+              <div class="col">
+                <strong><%= collection.recipe_count %></strong><br>
+                <small class="text-muted">Recipe<%= 's' unless collection.recipe_count == 1 %></small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer bg-transparent">
+            <div class="d-flex justify-content-between">
+              <%= link_to "View Collection", collection, class: "btn btn-outline-primary btn-sm" %>
+              <% if user_signed_in? && collection.user == current_user %>
+                <div class="btn-group">
+                  <%= link_to "Edit", edit_collection_path(collection), class: "btn btn-outline-secondary btn-sm" %>
+                  <%= link_to "Delete", collection, method: :delete, 
+                              class: "btn btn-outline-danger btn-sm",
+                              data: { 
+                                confirm: "Are you sure? This will remove all recipes from this collection.",
+                                turbo_method: :delete
+                              } %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-center py-5">
+    <div class="mb-4">
+      <i class="bi bi-collection text-muted" style="font-size: 4rem;"></i>
+    </div>
+    <h3 class="text-muted">No Collections Found</h3>
+    <% if @user && @user == current_user %>
+      <p class="text-muted">Create your first collection to organize your favorite recipes!</p>
+      <%= link_to "Create Collection", new_collection_path, class: "btn btn-primary" %>
+    <% else %>
+      <p class="text-muted">
+        <%= @user ? "#{@user.display_name} hasn't created any public collections yet." : "No public collections available." %>
+      </p>
+    <% end %>
+  </div>
+<% end %>

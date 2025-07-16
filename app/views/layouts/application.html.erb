@@ -43,6 +43,9 @@
             <li class="nav-item">
               <%= link_to "All Recipes", recipes_path, class: "nav-link" %>
             </li>
+            <li class="nav-item">
+              <%= link_to "Collections", collections_path, class: "nav-link" %>
+            </li>
             <% if user_signed_in? %>
               <li class="nav-item">
                 <%= link_to "Add Recipe", new_recipe_path, class: "nav-link" %>
@@ -92,6 +95,8 @@
                   <li><%= link_to '<i class="bi bi-person-gear"></i> Edit Profile'.html_safe, edit_user_registration_path, class: "dropdown-item" %></li>
                   <li><%= link_to '<i class="bi bi-person-circle"></i> View Profile'.html_safe, user_path(current_user), class: "dropdown-item" %></li>
                   <li><%= link_to '<i class="bi bi-book"></i> My Recipes <span class="badge bg-secondary ms-1">'.html_safe + current_user.recipes.count.to_s + '</span>'.html_safe, recipes_path(user: current_user.id), class: "dropdown-item" %></li>
+                  <li><%= link_to '<i class="bi bi-collection"></i> My Collections <span class="badge bg-secondary ms-1">'.html_safe + current_user.collections.count.to_s + '</span>'.html_safe, user_collections_path(current_user), class: "dropdown-item" %></li>
+                  <li><%= link_to '<i class="bi bi-heart-fill text-danger"></i> Favorites'.html_safe, current_user.favorites_collection, class: "dropdown-item" %></li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
                     <button class="dropdown-item" onclick="toggleDarkMode()" id="darkModeToggle">

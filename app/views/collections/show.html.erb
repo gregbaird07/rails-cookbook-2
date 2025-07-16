@@ -1,0 +1,211 @@
+<% content_for :title, "#{@collection.name} - Recipe Cookbook" %>
+
+<div class="row">
+  <div class="col-lg-8">
+    <!-- Collection Header -->
+    <div class="mb-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to "Collections", collections_path %></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= @collection.name %></li>
+        </ol>
+      </nav>
+      
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h1 class="display-6">
+            <%= @collection.name %>
+            <% if @collection.favorites? %>
+              <i class="bi bi-heart-fill text-danger ms-2"></i>
+            <% end %>
+            <% unless @collection.is_public %>
+              <i class="bi bi-lock-fill text-muted ms-2" title="Private collection"></i>
+            <% end %>
+          </h1>
+          <% if @collection.description.present? %>
+            <p class="lead text-muted"><%= @collection.description %></p>
+          <% end %>
+        </div>
+        
+        <% if user_signed_in? && @collection.user == current_user %>
+          <div class="btn-group">
+            <%= link_to "Edit Collection", edit_collection_path(@collection), class: "btn btn-outline-primary" %>
+            <% unless @collection.favorites? %>
+              <%= link_to "Delete Collection", @collection, method: :delete, 
+                          class: "btn btn-outline-danger",
+                          data: { 
+                            confirm: "Are you sure? This will remove all recipes from this collection.",
+                            turbo_method: :delete
+                          } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <div class="d-flex align-items-center mb-3">
+        <div class="d-flex align-items-center me-4">
+          <% if @collection.user.avatar_url.present? %>
+            <img src="<%= @collection.user.avatar_url %>" alt="<%= @collection.user.display_name %>" 
+                 class="rounded-circle me-2" width="32" height="32" 
+                 style="object-fit: cover;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+            <div class="bg-secondary rounded-circle d-none align-items-center justify-content-center me-2" 
+                 style="width: 32px; height: 32px; font-size: 14px; font-weight: bold; color: white;">
+              <%= @collection.user.initials %>
+            </div>
+          <% else %>
+            <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                 style="width: 32px; height: 32px; font-size: 14px; font-weight: bold; color: white;">
+              <%= @collection.user.initials %>
+            </div>
+          <% end %>
+          <div>
+            <div class="fw-medium">By <%= link_to @collection.user.display_name, user_path(@collection.user), class: "text-decoration-none" %></div>
+            <small class="text-muted"><%= @collection.recipe_count %> recipe<%= 's' unless @collection.recipe_count == 1 %></small>
+          </div>
+        </div>
+        <span class="text-muted">
+          <i class="bi bi-calendar"></i>
+          Updated <%= time_ago_in_words(@collection.updated_at) %> ago
+        </span>
+      </div>
+    </div>
+
+    <!-- Recipes in Collection -->
+    <% if @recipes.any? %>
+      <div class="row">
+        <% @recipes.each do |recipe| %>
+          <div class="col-md-6 mb-4">
+            <div class="card h-100 recipe-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h5 class="card-title">
+                    <%= link_to recipe.title, recipe, class: "text-decoration-none" %>
+                  </h5>
+                  <% if user_signed_in? && @collection.user == current_user %>
+                    <%= link_to remove_recipe_from_collection_path(@collection, recipe), 
+                                method: :delete,
+                                class: "btn btn-sm btn-outline-danger",
+                                data: { 
+                                  confirm: "Remove this recipe from the collection?",
+                                  turbo_method: :delete
+                                },
+                                title: "Remove from collection" do %>
+                      <i class="bi bi-x"></i>
+                    <% end %>
+                  <% end %>
+                </div>
+                
+                <p class="card-text text-muted small d-flex align-items-center">
+                  <% if recipe.user.avatar_url.present? %>
+                    <img src="<%= recipe.user.avatar_url %>" alt="<%= recipe.user.display_name %>" 
+                         class="rounded-circle me-2" width="20" height="20" 
+                         style="object-fit: cover;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <div class="bg-secondary rounded-circle d-none align-items-center justify-content-center me-2" 
+                         style="width: 20px; height: 20px; font-size: 10px; font-weight: bold; color: white;">
+                      <%= recipe.user.initials %>
+                    </div>
+                  <% else %>
+                    <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                         style="width: 20px; height: 20px; font-size: 10px; font-weight: bold; color: white;">
+                      <%= recipe.user.initials %>
+                    </div>
+                  <% end %>
+                  <span>By <%= link_to recipe.user.display_name, user_path(recipe.user), class: "text-decoration-none" %></span>
+                </p>
+                
+                <p class="card-text">
+                  <%= truncate(recipe.description, length: 100) %>
+                </p>
+                
+                <div class="row text-center text-small">
+                  <div class="col-3">
+                    <small class="text-muted">Prep</small><br>
+                    <strong><%= recipe.prep_time %> min</strong>
+                  </div>
+                  <div class="col-3">
+                    <small class="text-muted">Cook</small><br>
+                    <strong><%= recipe.cook_time %> min</strong>
+                  </div>
+                  <div class="col-3">
+                    <small class="text-muted">Serves</small><br>
+                    <strong><%= recipe.servings %></strong>
+                  </div>
+                  <div class="col-3">
+                    <small class="text-muted">Rating</small><br>
+                    <% if recipe.total_reviews > 0 %>
+                      <div class="text-warning small">
+                        <% (1..5).each do |i| %>
+                          <% if i <= recipe.average_rating %>
+                            <i class="bi bi-star-fill"></i>
+                          <% elsif i - 0.5 <= recipe.average_rating %>
+                            <i class="bi bi-star-half"></i>
+                          <% else %>
+                            <i class="bi bi-star"></i>
+                          <% end %>
+                        <% end %>
+                      </div>
+                      <small class="text-muted"><%= recipe.total_reviews %></small>
+                    <% else %>
+                      <small class="text-muted">No reviews</small>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <div class="mb-4">
+          <i class="bi bi-collection text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="text-muted">No Recipes in Collection</h3>
+        <p class="text-muted">
+          <% if user_signed_in? && @collection.user == current_user %>
+            Browse recipes and add them to this collection!
+          <% else %>
+            This collection doesn't contain any recipes yet.
+          <% end %>
+        </p>
+        <% if user_signed_in? && @collection.user == current_user %>
+          <%= link_to "Browse Recipes", recipes_path, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="col-lg-4">
+    <!-- Collection Info -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="bi bi-info-circle"></i> Collection Details</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2">
+            <strong>Recipes:</strong> <%= @collection.recipe_count %>
+          </li>
+          <li class="mb-2">
+            <strong>Visibility:</strong> 
+            <% if @collection.is_public %>
+              <span class="badge bg-success">Public</span>
+            <% else %>
+              <span class="badge bg-secondary">Private</span>
+            <% end %>
+          </li>
+          <li class="mb-2">
+            <strong>Created:</strong> 
+            <%= @collection.created_at.strftime("%B %d, %Y") %>
+          </li>
+          <li class="mb-2">
+            <strong>Last Updated:</strong> 
+            <%= time_ago_in_words(@collection.updated_at) %> ago
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

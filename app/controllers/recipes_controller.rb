@@ -4,12 +4,27 @@ class RecipesController < ApplicationController
   before_action :check_owner, only: [:edit, :update, :destroy]
 
   def index
-    @recipes = Recipe.includes(:user).all
+    @recipes = Recipe.includes(:user, :reviews).all
     @recipes = @recipes.where(user_id: params[:user]) if params[:user].present?
-    @recipes = @recipes.order(created_at: :desc)
+    
+    # Sort by different criteria
+    case params[:sort]
+    when 'rating'
+      @recipes = @recipes.left_joins(:reviews)
+                        .group('recipes.id')
+                        .order(Arel.sql('AVG(reviews.rating) DESC NULLS LAST, recipes.created_at DESC'))
+    when 'reviews'
+      @recipes = @recipes.left_joins(:reviews)
+                        .group('recipes.id')
+                        .order(Arel.sql('COUNT(reviews.id) DESC, recipes.created_at DESC'))
+    else
+      @recipes = @recipes.order(created_at: :desc)
+    end
   end
 
   def show
+    @reviews = @recipe.reviews.includes(:user).recent
+    @review = Review.new if user_signed_in? && !@recipe.reviewed_by?(current_user)
   end
 
   def new

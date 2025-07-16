@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   # Associations
   has_many :recipes, dependent: :destroy
+  has_many :reviews, dependent: :destroy
+  has_many :collections, dependent: :destroy
 
   # Validations
   validates :username, uniqueness: { case_sensitive: false }, 
@@ -33,5 +35,28 @@ class User < ApplicationRecord
   # Check if user has a complete profile
   def profile_complete?
     username.present? && bio.present?
+  end
+  
+  # Get or create the user's favorites collection
+  def favorites_collection
+    collections.find_or_create_by(name: 'Favorites') do |collection|
+      collection.description = 'My favorite recipes'
+      collection.is_public = false
+    end
+  end
+  
+  # Check if user has favorited a recipe
+  def favorited?(recipe)
+    favorites_collection.contains_recipe?(recipe)
+  end
+  
+  # Add recipe to favorites
+  def add_to_favorites(recipe)
+    favorites_collection.add_recipe(recipe)
+  end
+  
+  # Remove recipe from favorites
+  def remove_from_favorites(recipe)
+    favorites_collection.remove_recipe(recipe)
   end
 end

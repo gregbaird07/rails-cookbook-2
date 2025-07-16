@@ -1,0 +1,13 @@
+<div id="favorite-button-<%= recipe.id %>">
+  <%= link_to recipe_favorite_path(recipe), 
+              method: :post,
+              class: "btn #{current_user.favorited?(recipe) ? 'btn-danger' : 'btn-outline-danger'} favorite-btn #{'favorited' if current_user.favorited?(recipe)}",
+              data: { 
+                turbo_method: :post,
+                controller: "favorite-button",
+                action: "click->favorite-button#toggle"
+              } do %>
+    <i class="bi bi-heart<%= '-fill' if current_user.favorited?(recipe) %>"></i>
+    <%= current_user.favorited?(recipe) ? 'Favorited' : 'Add to Favorites' %>
+  <% end %>
+</div>

@@ -167,16 +167,16 @@
   --dropdown-item-hover-bg: #4a5568;
   --dropdown-divider-bg: #4a5568;
   
-  --alert-success-bg: rgba(72, 187, 120, 0.2);
+  --alert-success-bg: #2d7d32;
   --alert-success-border: #48bb78;
   --alert-success-color: #c6f6d5;
-  --alert-danger-bg: rgba(229, 62, 62, 0.2);
+  --alert-danger-bg: #c62828;
   --alert-danger-border: #e53e3e;
   --alert-danger-color: #fed7d7;
-  --alert-warning-bg: rgba(237, 137, 54, 0.2);
+  --alert-warning-bg: #ef6c00;
   --alert-warning-border: #ed8936;
   --alert-warning-color: #feebc8;
-  --alert-info-bg: rgba(99, 179, 237, 0.2);
+  --alert-info-bg: #1976d2;
   --alert-info-border: #63b3ed;
   --alert-info-color: #bee3f8;
   
@@ -504,16 +504,16 @@ a:hover {
     --dropdown-item-hover-bg: #4a5568;
     --dropdown-divider-bg: #4a5568;
     
-    --alert-success-bg: rgba(72, 187, 120, 0.2);
+    --alert-success-bg: #2d7d32;
     --alert-success-border: #48bb78;
     --alert-success-color: #c6f6d5;
-    --alert-danger-bg: rgba(229, 62, 62, 0.2);
+    --alert-danger-bg: #c62828;
     --alert-danger-border: #e53e3e;
     --alert-danger-color: #fed7d7;
-    --alert-warning-bg: rgba(237, 137, 54, 0.2);
+    --alert-warning-bg: #ef6c00;
     --alert-warning-border: #ed8936;
     --alert-warning-color: #feebc8;
-    --alert-info-bg: rgba(99, 179, 237, 0.2);
+    --alert-info-bg: #1976d2;
     --alert-info-border: #63b3ed;
     --alert-info-color: #bee3f8;
     
@@ -521,4 +521,242 @@ a:hover {
     --link-color: #4299e1;
     --link-hover-color: #63b3ed;
   }
+}
+
+/* Star Rating Styles */
+.star-rating {
+  color: #ffc107;
+  
+  i {
+    margin-right: 2px;
+  }
+}
+
+.review-card {
+  transition: box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.rating-summary {
+  background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+  color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  
+  .rating-number {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .rating-stars {
+    font-size: 1.2rem;
+  }
+}
+
+/* Collection Card Styles */
+.collection-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.recipe-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Favorites heart animation */
+.favorite-btn {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &.favorited {
+    animation: heartbeat 0.6s ease-in-out;
+  }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Notification animations */
+#notifications {
+  z-index: 1055 !important; /* Above Bootstrap modals */
+}
+
+#notifications .alert {
+  animation: slideInRight 0.3s ease-out;
+  margin-bottom: 10px;
+  min-width: 300px;
+  backdrop-filter: none !important; /* Remove any backdrop filters */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-width: 2px !important;
+  border-style: solid !important;
+  /* Force solid backgrounds by overriding any Bootstrap opacity or transparency */
+  background-color: unset !important; /* Reset so specific classes take precedence */
+  /* Force opacity to 1 to override inline styles */
+  opacity: 1 !important;
+  /* Override any transition that might affect opacity */
+  transition: transform 0.3s ease-out !important;
+}
+
+/* Override Bootstrap fade class for notifications */
+#notifications .alert.fade {
+  opacity: 1 !important;
+}
+
+#notifications .alert.fade.show {
+  opacity: 1 !important;
+}
+
+#notifications .alert-success {
+  background-color: var(--alert-success-bg) !important;
+  border-color: var(--alert-success-border) !important;
+  color: var(--alert-success-color) !important;
+  opacity: 1 !important;
+  /* Force solid background in dark mode */
+  background: var(--alert-success-bg) !important;
+}
+
+#notifications .alert-info {
+  background-color: var(--alert-info-bg) !important;
+  border-color: var(--alert-info-border) !important;
+  color: var(--alert-info-color) !important;
+  opacity: 1 !important;
+  /* Force solid background in dark mode */
+  background: var(--alert-info-bg) !important;
+}
+
+#notifications .alert-warning {
+  background-color: var(--alert-warning-bg) !important;
+  border-color: var(--alert-warning-border) !important;
+  color: var(--alert-warning-color) !important;
+  opacity: 1 !important;
+  /* Force solid background in dark mode */
+  background: var(--alert-warning-bg) !important;
+}
+
+#notifications .alert-danger {
+  background-color: var(--alert-danger-bg) !important;
+  border-color: var(--alert-danger-border) !important;
+  color: var(--alert-danger-color) !important;
+  opacity: 1 !important;
+  /* Force solid background in dark mode */
+  background: var(--alert-danger-bg) !important;
+}
+
+/* Dark mode specific notification overrides */
+[data-bs-theme="dark"] #notifications .alert-success {
+  background: #2d7d32 !important;
+  background-color: #2d7d32 !important;
+  border-color: #48bb78 !important;
+  color: #c6f6d5 !important;
+  opacity: 1 !important;
+}
+
+[data-bs-theme="dark"] #notifications .alert-info {
+  background: #1976d2 !important;
+  background-color: #1976d2 !important;
+  border-color: #63b3ed !important;
+  color: #bee3f8 !important;
+  opacity: 1 !important;
+}
+
+[data-bs-theme="dark"] #notifications .alert {
+  opacity: 1 !important;
+  background-color: inherit !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bs-theme]) #notifications .alert-success {
+    background: #2d7d32 !important;
+    background-color: #2d7d32 !important;
+    border-color: #48bb78 !important;
+    color: #c6f6d5 !important;
+    opacity: 1 !important;
+  }
+
+  :root:not([data-bs-theme]) #notifications .alert-info {
+    background: #1976d2 !important;
+    background-color: #1976d2 !important;
+    border-color: #63b3ed !important;
+    color: #bee3f8 !important;
+    opacity: 1 !important;
+  }
+
+  :root:not([data-bs-theme]) #notifications .alert {
+    opacity: 1 !important;
+  }
+}
+
+/* Ultimate fallback - force all notifications to be visible */
+html[data-bs-theme="dark"] #notifications .alert,
+html:not([data-bs-theme]) #notifications .alert {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+html[data-bs-theme="dark"] #notifications .alert-info,
+html:not([data-bs-theme]) #notifications .alert-info {
+  background: #1976d2 !important;
+  background-color: #1976d2 !important;
+  border-color: #63b3ed !important;
+  color: #bee3f8 !important;
+}
+
+html[data-bs-theme="dark"] #notifications .alert-success,
+html:not([data-bs-theme]) #notifications .alert-success {
+  background: #2d7d32 !important;
+  background-color: #2d7d32 !important;
+  border-color: #48bb78 !important;
+  color: #c6f6d5 !important;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Collection dropdown animations */
+.dropdown-item {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateX(5px);
+  }
+  
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+/* Loading states */
+.btn:disabled {
+  opacity: 0.7;
+}
+
+/* Turbo loading indicator */
+.turbo-progress-bar {
+  background-color: #0d6efd;
 }
