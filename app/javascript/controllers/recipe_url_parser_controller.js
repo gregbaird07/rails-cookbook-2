@@ -82,7 +82,11 @@ export default class extends Controller {
         this.showSuccess('Recipe parsed successfully! Please review and adjust the fields as needed.')
         this.urlInputTarget.value = ''
       } else {
-        this.showError(data.error || 'Failed to parse recipe from URL')
+        if (data.manual_guide) {
+          this.showManualGuide(data.error, data.manual_guide)
+        } else {
+          this.showError(data.error || 'Failed to parse recipe from URL')
+        }
       }
     } catch (error) {
       console.error('Fetch error:', error)
@@ -131,6 +135,30 @@ export default class extends Controller {
   showError(message) {
     if (this.hasErrorDivTarget) {
       this.errorDivTarget.textContent = message
+      this.errorDivTarget.style.display = 'block'
+    }
+  }
+
+  showManualGuide(errorMessage, guide) {
+    if (this.hasErrorDivTarget) {
+      let html = `<strong>${errorMessage}</strong><br><br>`
+      html += `<strong>Manual extraction guide for ${guide.site_name}:</strong><br><br>`
+      html += '<ol class="mb-3">'
+      guide.instructions.forEach(instruction => {
+        html += `<li>${instruction}</li>`
+      })
+      html += '</ol>'
+      
+      if (guide.tips && guide.tips.length > 0) {
+        html += '<strong>Tips:</strong><br>'
+        html += '<ul class="mb-0">'
+        guide.tips.forEach(tip => {
+          html += `<li>${tip}</li>`
+        })
+        html += '</ul>'
+      }
+      
+      this.errorDivTarget.innerHTML = html
       this.errorDivTarget.style.display = 'block'
     }
   }

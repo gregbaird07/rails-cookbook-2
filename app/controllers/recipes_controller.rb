@@ -89,7 +89,20 @@ class RecipesController < ApplicationController
     if parsed_data
       render json: { success: true, recipe: parsed_data }
     else
-      render json: { error: 'Could not parse recipe from this URL. Please check that the URL is valid and points to a recipe page from a supported website (Food.com, AllRecipes, etc.).' }, status: :unprocessable_entity
+      # Check if it's a known site that blocks automated access
+      domain = URI.parse(url).host.downcase rescue ""
+      
+      if domain.include?('maangchi.com')
+        guide = RecipeSiteHelpers.manual_extraction_guide(url)
+        error_message = "#{guide[:site_name]} blocks automated requests. Please manually copy the recipe details from the page."
+        render json: { 
+          error: error_message,
+          manual_guide: guide
+        }, status: :unprocessable_entity
+      else
+        error_message = 'Could not parse recipe from this URL. This may be due to bot protection or an unsupported website format. Supported sites include Food.com, AllRecipes, Taste of Home, etc.'
+        render json: { error: error_message }, status: :unprocessable_entity
+      end
     end
   rescue => e
     Rails.logger.error "Recipe URL parsing error: #{e.message}"

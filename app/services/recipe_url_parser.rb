@@ -13,15 +13,39 @@ class RecipeUrlParser
     Rails.logger.info "=== RECIPE URL PARSER START ==="
     Rails.logger.info "URL: #{@url}"
     
-    response = self.class.get(@url, headers: {
-      'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    })
+    # Enhanced headers to appear more like a real browser
+    headers = {
+      'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      'Accept-Language' => 'en-US,en;q=0.5',
+      'Accept-Encoding' => 'gzip, deflate, br',
+      'Connection' => 'keep-alive',
+      'Upgrade-Insecure-Requests' => '1',
+      'Sec-Fetch-Dest' => 'document',
+      'Sec-Fetch-Mode' => 'navigate',
+      'Sec-Fetch-Site' => 'none',
+      'Cache-Control' => 'max-age=0'
+    }
+    
+    # Try with delay to avoid rate limiting
+    sleep(1) if @url.include?('maangchi.com')
+    
+    response = self.class.get(@url, headers: headers, timeout: 30)
     
     Rails.logger.info "HTTP Response: #{response.code} #{response.message}"
     Rails.logger.info "Response success: #{response.success?}"
     
     unless response.success?
-      Rails.logger.error "HTTP request failed: #{response.code} #{response.message}"
+      case response.code
+      when 403
+        Rails.logger.error "HTTP 403 Forbidden - Website may be blocking automated requests"
+        Rails.logger.error "This is common with sites that use CloudFlare or bot protection"
+        Rails.logger.error "Try visiting the URL manually to check if it works in a browser"
+      when 429
+        Rails.logger.error "HTTP 429 Too Many Requests - Rate limited"
+      else
+        Rails.logger.error "HTTP request failed: #{response.code} #{response.message}"
+      end
       return nil
     end
     
