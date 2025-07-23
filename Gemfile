@@ -26,7 +26,7 @@ gem "jbuilder"
 gem "devise"
 
 # Recipe URL parsing
-gem "nokogiri", "~> 1.15"
+gem "nokogiri", "~> 1.18"
 gem "httparty", "~> 0.21"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
